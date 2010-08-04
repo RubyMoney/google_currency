@@ -1,8 +1,8 @@
-FederalReserveBank
-====================
+Federal Reserve
+===============
 
-This gem extends Money::Bank::Base with Money::Bank::FederalReserveBank and
-gives you access to the current Federal Reserve of New York's currency exchange
+This gem extends Money::Bank::Base with Money::Bank::FederalReserve and gives
+you access to the current Federal Reserve of New York's currency exchange
 rates.
 
 CHANGELOG

@@ -2,7 +2,7 @@ require 'money'
 
 class Money
   module Bank
-    class FederalReserveBank < Money::Bank::Base
+    class FederalReserve < Money::Bank::Base
     end
   end
 end
