@@ -14,10 +14,9 @@ tmtags
 *.swp
 
 ## PROJECT::GENERAL
-coverage
-rdoc
 pkg
 doc
 .yardoc
+.gem
 
 ## PROJECT::SPECIFIC
