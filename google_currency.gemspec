@@ -15,7 +15,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "yard", ">= 0.5.8"
 
   s.add_dependency "money", ">= 3.1.0"
-  s.add_dependency "nokogiri", ">= 1.4.3.1"
 
   s.files        = Dir.glob("lib/**/*") + %w(LICENSE README.md CHANGELOG)
   s.require_path = "lib"
