@@ -1,9 +1,8 @@
-Federal Reserve
+Google Currency
 ===============
 
-This gem extends Money::Bank::Base with Money::Bank::FederalReserve and gives
-you access to the current Federal Reserve of New York's currency exchange
-rates.
+This gem extends Money::Bank::Base with Money::Bank::GoogleCurrency and gives
+you access to the current Google Currency exchange rates
 
 CHANGELOG
 ---------
