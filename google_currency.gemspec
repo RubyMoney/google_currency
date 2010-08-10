@@ -17,4 +17,7 @@ Gem::Specification.new do |s|
 
   s.files        = Dir.glob("lib/**/*") + %w(LICENSE README.md CHANGELOG)
   s.require_path = "lib"
+
+  s.extra_rdoc_files = %w(LICENSE README.md CHANGELOG)
+  s.rdoc_options = ["--charset=UTF-8"]
 end
