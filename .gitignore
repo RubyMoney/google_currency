@@ -17,6 +17,6 @@ tmtags
 pkg
 doc
 .yardoc
-.gem
+*.gem
 
 ## PROJECT::SPECIFIC
