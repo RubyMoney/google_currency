@@ -13,7 +13,10 @@ class Money
       end
 
       def get_google_rate(from, to)
-        data = eval(URI.parse("http://www.google.com/ig/calculator?hl=en&q=1#{from.upcase}%3D%3F#{to.upcase}").read)
+        from = Currency.wrap(from)
+        to   = Currency.wrap(to)
+
+        data = eval(URI.parse("http://www.google.com/ig/calculator?hl=en&q=1#{from.iso_code}%3D%3F#{to.iso_code}").read)
         raise UnknownRate unless data[:error] == '' or data[:error] == '0'
         data[:rhs].split(' ')[0].to_f
       end

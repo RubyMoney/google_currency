@@ -17,8 +17,17 @@ describe "GoogleCurrency" do
       @bank.get_google_rate('usd', 'usd').should == 1.0
     end
 
-    it "should raise an UnknownRate error for an invalid currency" do
-      lambda{@bank.get_google_rate('USD', 'BATMAN')}.should raise_error Money::Bank::UnknownRate
+    it "should work for Currency.wrap(:USD)->Currency.wrap(:USD)" do
+      @bank.get_google_rate(Money::Currency.wrap(:USD),
+                            Money::Currency.wrap(:USD)).should == 1.0
+    end
+
+    it "should raise an UnknownCurrency error for an unknown currency" do
+      lambda{@bank.get_google_rate('USD', 'BATMAN')}.should raise_error Money::Currency::UnknownCurrency
+    end
+
+    it "should raise and UnknownRate error for a known currency but unknown rate" do
+      lambda{@bank.get_google_rate('USD', 'ALL')}.should raise_error Money::Bank::UnknownRate
     end
   end
 
