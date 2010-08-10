@@ -8,17 +8,17 @@ describe "GoogleCurrency" do
     @bank = Money::Bank::GoogleCurrency.new
   end
 
-  describe "#get_rate" do
+  describe "#get_google_rate" do
     it "should work for USD->USD" do
-      @bank.get_rate('USD', 'USD').should == 1.0
+      @bank.get_google_rate('USD', 'USD').should == 1.0
     end
 
     it "should work for usd->usd" do
-      @bank.get_rate('usd', 'usd').should == 1.0
+      @bank.get_google_rate('usd', 'usd').should == 1.0
     end
 
     it "should raise an UnknownRate error for an invalid currency" do
-      lambda{@bank.get_rate('USD', 'BATMAN')}.should raise_error Money::Bank::UnknownRate
+      lambda{@bank.get_google_rate('USD', 'BATMAN')}.should raise_error Money::Bank::UnknownRate
     end
   end
 end
