@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "google_currency"
-  s.version     = "0.0.1"
+  s.version     = "0.1.0"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Shane Emmons"]
   s.email       = ["semmons99+RubyMoney@gmail.com"]
