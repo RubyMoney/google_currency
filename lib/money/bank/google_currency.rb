@@ -12,6 +12,13 @@ class Money
         }
       end
 
+      def flush_rate(from, to)
+        key = rate_key_for(from, to)
+        @mutex.synchronize{
+          @rates.delete(key)
+        }
+      end
+
       def get_rate(from, to)
         @mutex.synchronize{
           @rates[rate_key_for(from, to)] ||= get_google_rate(from, to)
