@@ -52,4 +52,12 @@ describe "GoogleCurrency" do
       @bank.rates.should include 'USD_TO_EUR'
     end
   end
+
+  describe "#flush_rates" do
+    it "should empty @rates" do
+      @bank.get_rate('USD', 'EUR')
+      @bank.flush_rates
+      @bank.rates.should == {}
+    end
+  end
 end
