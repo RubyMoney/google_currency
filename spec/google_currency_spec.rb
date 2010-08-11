@@ -46,5 +46,10 @@ describe "GoogleCurrency" do
     it "should return the correct rate" do
       @bank.get_rate('USD', 'USD').should == 1.0
     end
+
+    it "should store the rate for faster retreival" do
+      @bank.get_rate('USD', 'EUR')
+      @bank.rates.should include 'USD_TO_EUR'
+    end
   end
 end
