@@ -6,6 +6,12 @@ class Money
     class GoogleCurrency < Money::Bank::VariableExchange
       attr_reader :rates
 
+      def flush_rates
+        @mutex.synchronize{
+          @rates = {}
+        }
+      end
+
       def get_rate(from, to)
         @mutex.synchronize{
           @rates[rate_key_for(from, to)] ||= get_google_rate(from, to)
