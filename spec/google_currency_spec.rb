@@ -60,4 +60,14 @@ describe "GoogleCurrency" do
       @bank.rates.should == {}
     end
   end
+
+  describe "#flush_rate" do
+    it "should remove a specific rate from @rates" do
+      @bank.get_rate('USD', 'EUR')
+      @bank.get_rate('USD', 'JPY')
+      @bank.flush_rate('USD', 'EUR')
+      @bank.rates.should include 'USD_TO_JPY'
+      @bank.rates.should_not include 'USD_TO_EUR'
+    end
+  end
 end
