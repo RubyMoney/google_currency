@@ -1,2 +1,6 @@
+== GoogleCurrency 0.1.1
+ * Added #flush_rates
+ * Added #flush_rate
+
 == GoogleCurrency 0.1.0
  * Initial release
