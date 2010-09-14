@@ -15,9 +15,9 @@ Gem::Specification.new do |s|
 
   s.add_dependency "money", "~> 3.1.0"
 
-  s.files        = Dir.glob("lib/**/*") + %w(LICENSE README.md CHANGELOG)
+  s.files        = Dir.glob("lib/**/*") + %w(LICENSE README.md CHANGELOG.md)
   s.require_path = "lib"
 
-  s.extra_rdoc_files = %w(LICENSE README.md CHANGELOG)
+  s.extra_rdoc_files = %w(LICENSE README.md CHANGELOG.md)
   s.rdoc_options = ["--charset=UTF-8"]
 end
