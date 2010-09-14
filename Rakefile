@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'rake'
 require 'rake/clean'
 
 CLOBBER.include('.yardoc', 'doc', '*.gem')
