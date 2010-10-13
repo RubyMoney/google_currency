@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = ">= 1.3.7"
 
-  s.add_development_dependency "rspec", ">= 1.3.0"
+  s.add_development_dependency "rspec", ">= 2.0.0"
   s.add_development_dependency "yard", ">= 0.5.8"
 
   s.add_dependency "money", "~> 3.1.5"
