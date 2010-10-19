@@ -1,5 +1,6 @@
 require 'money'
 require 'open-uri'
+require 'json'
 
 class Money
   module Bank
@@ -78,14 +79,15 @@ class Money
         to   = Currency.wrap(to)
 
         data = URI.parse("http://www.google.com/ig/calculator?hl=en&q=1#{from.iso_code}%3D%3F#{to.iso_code}").read
-        data.gsub!(/lhs:/, ':lhs =>')
-        data.gsub!(/rhs:/, ':rhs =>')
-        data.gsub!(/error:/, ':error =>')
-        data.gsub!(/icc:/, ':icc =>')
-        data = eval(data)
+        data.gsub!(/lhs:/, '"lhs":')
+        data.gsub!(/rhs:/, '"rhs":')
+        data.gsub!(/error:/, '"error":')
+        data.gsub!(/icc:/, '"icc":')
+        data = JSON.parse(data)
 
-        raise UnknownRate unless data[:error] == '' or data[:error] == '0'
-        data[:rhs].split(' ')[0].to_f
+        error = data['error']
+        raise UnknownRate unless error == '' || error == '0'
+        data['rhs'].split(' ')[0].to_f
       end
     end
   end
