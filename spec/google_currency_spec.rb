@@ -23,11 +23,11 @@ describe "GoogleCurrency" do
     end
 
     it "should raise an UnknownCurrency error for an unknown currency" do
-      lambda{@bank.get_google_rate('USD', 'BATMAN')}.should raise_error Money::Currency::UnknownCurrency
+      lambda{@bank.get_google_rate('USD', 'BATMAN')}.should raise_error(Money::Currency::UnknownCurrency)
     end
 
     it "should raise and UnknownRate error for a known currency but unknown rate" do
-      lambda{@bank.get_google_rate('USD', 'ALL')}.should raise_error Money::Bank::UnknownRate
+      lambda{@bank.get_google_rate('USD', 'ALL')}.should raise_error(Money::Bank::UnknownRate)
     end
   end
 
@@ -49,7 +49,7 @@ describe "GoogleCurrency" do
 
     it "should store the rate for faster retreival" do
       @bank.get_rate('USD', 'EUR')
-      @bank.rates.should include 'USD_TO_EUR'
+      @bank.rates.should include('USD_TO_EUR')
     end
   end
 
@@ -66,8 +66,8 @@ describe "GoogleCurrency" do
       @bank.get_rate('USD', 'EUR')
       @bank.get_rate('USD', 'JPY')
       @bank.flush_rate('USD', 'EUR')
-      @bank.rates.should include 'USD_TO_JPY'
-      @bank.rates.should_not include 'USD_TO_EUR'
+      @bank.rates.should include('USD_TO_JPY')
+      @bank.rates.should_not include('USD_TO_EUR')
     end
   end
 end
