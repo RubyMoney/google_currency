@@ -276,12 +276,12 @@ Stores the currently known rates.
       <pre class="lines">
 
 
-8
 9
-10</pre>
+10
+11</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/money/bank/google_currency.rb', line 8</span>
+      <pre class="code"><span class="info file"># File 'lib/money/bank/google_currency.rb', line 9</span>
 
 <span class='kw'>def</span> <span class='id rates'>rates</span>
   <span class='ivar'>@rates</span>
@@ -389,15 +389,15 @@ The flushed rate.
       <pre class="lines">
 
 
-39
 40
 41
 42
 43
-44</pre>
+44
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/money/bank/google_currency.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'lib/money/bank/google_currency.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='id flush_rate'>flush_rate</span><span class='lparen'>(</span><span class='id from'>from</span><span class='comma'>,</span> <span class='id to'>to</span><span class='rparen'>)</span>
   <span class='id key'>key</span> <span class='op'>=</span> <span class='id rate_key_for'>rate_key_for</span><span class='lparen'>(</span><span class='id from'>from</span><span class='comma'>,</span> <span class='id to'>to</span><span class='rparen'>)</span>
@@ -463,14 +463,14 @@ The empty @rates Hash.
       <pre class="lines">
 
 
-19
 20
 21
 22
-23</pre>
+23
+24</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/money/bank/google_currency.rb', line 19</span>
+      <pre class="code"><span class="info file"># File 'lib/money/bank/google_currency.rb', line 20</span>
 
 <span class='kw'>def</span> <span class='id flush_rates'>flush_rates</span>
   <span class='ivar'>@mutex</span><span class='period'>.</span><span class='id synchronize'>synchronize</span><span class='lbrace'>{</span>
@@ -585,7 +585,6 @@ The requested rate.
       <pre class="lines">
 
 
-76
 77
 78
 79
@@ -598,24 +597,27 @@ The requested rate.
 86
 87
 88
-89</pre>
+89
+90
+91</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/money/bank/google_currency.rb', line 76</span>
+      <pre class="code"><span class="info file"># File 'lib/money/bank/google_currency.rb', line 77</span>
 
 <span class='kw'>def</span> <span class='id get_google_rate'>get_google_rate</span><span class='lparen'>(</span><span class='id from'>from</span><span class='comma'>,</span> <span class='id to'>to</span><span class='rparen'>)</span>
   <span class='id from'>from</span> <span class='op'>=</span> <span class='const'>Currency</span><span class='period'>.</span><span class='id wrap'>wrap</span><span class='lparen'>(</span><span class='id from'>from</span><span class='rparen'>)</span>
   <span class='id to'>to</span>   <span class='op'>=</span> <span class='const'>Currency</span><span class='period'>.</span><span class='id wrap'>wrap</span><span class='lparen'>(</span><span class='id to'>to</span><span class='rparen'>)</span>
 
   <span class='id data'>data</span> <span class='op'>=</span> <span class='const'>URI</span><span class='period'>.</span><span class='id parse'>parse</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://www.google.com/ig/calculator?hl=en&amp;q=1</span><span class='embexpr_beg'>#{</span><span class='id from'>from</span><span class='period'>.</span><span class='id iso_code'>iso_code</span><span class='rbrace'>}</span><span class='tstring_content'>%3D%3F</span><span class='embexpr_beg'>#{</span><span class='id to'>to</span><span class='period'>.</span><span class='id iso_code'>iso_code</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id read'>read</span>
-  <span class='id data'>data</span><span class='period'>.</span><span class='id gsub!'>gsub!</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>lhs:</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>:lhs =&gt;</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
-  <span class='id data'>data</span><span class='period'>.</span><span class='id gsub!'>gsub!</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>rhs:</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>:rhs =&gt;</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
-  <span class='id data'>data</span><span class='period'>.</span><span class='id gsub!'>gsub!</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>error:</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>:error =&gt;</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
-  <span class='id data'>data</span><span class='period'>.</span><span class='id gsub!'>gsub!</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>icc:</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>:icc =&gt;</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
-  <span class='id data'>data</span> <span class='op'>=</span> <span class='id eval'>eval</span><span class='lparen'>(</span><span class='id data'>data</span><span class='rparen'>)</span>
+  <span class='id data'>data</span><span class='period'>.</span><span class='id gsub!'>gsub!</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>lhs:</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>&quot;lhs&quot;:</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+  <span class='id data'>data</span><span class='period'>.</span><span class='id gsub!'>gsub!</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>rhs:</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>&quot;rhs&quot;:</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+  <span class='id data'>data</span><span class='period'>.</span><span class='id gsub!'>gsub!</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>error:</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>&quot;error&quot;:</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+  <span class='id data'>data</span><span class='period'>.</span><span class='id gsub!'>gsub!</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>icc:</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>&quot;icc&quot;:</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+  <span class='id data'>data</span> <span class='op'>=</span> <span class='const'>JSON</span><span class='period'>.</span><span class='id parse'>parse</span><span class='lparen'>(</span><span class='id data'>data</span><span class='rparen'>)</span>
 
-  <span class='id raise'>raise</span> <span class='const'>UnknownRate</span> <span class='kw'>unless</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='symbol'>:error</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span> <span class='kw'>or</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='symbol'>:error</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>0</span><span class='tstring_end'>'</span></span>
-  <span class='id data'>data</span><span class='lbracket'>[</span><span class='symbol'>:rhs</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'> </span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id to_f'>to_f</span>
+  <span class='id error'>error</span> <span class='op'>=</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>error</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+  <span class='id raise'>raise</span> <span class='const'>UnknownRate</span> <span class='kw'>unless</span> <span class='id error'>error</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span> <span class='op'>||</span> <span class='id error'>error</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>0</span><span class='tstring_end'>'</span></span>
+  <span class='const'>BigDecimal</span><span class='lparen'>(</span><span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>rhs</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'> </span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -713,14 +715,14 @@ The requested rate.
       <pre class="lines">
 
 
-58
 59
 60
 61
-62</pre>
+62
+63</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/money/bank/google_currency.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'lib/money/bank/google_currency.rb', line 59</span>
 
 <span class='kw'>def</span> <span class='id get_rate'>get_rate</span><span class='lparen'>(</span><span class='id from'>from</span><span class='comma'>,</span> <span class='id to'>to</span><span class='rparen'>)</span>
   <span class='ivar'>@mutex</span><span class='period'>.</span><span class='id synchronize'>synchronize</span><span class='lbrace'>{</span>
@@ -737,7 +739,7 @@ The requested rate.
 </div>
     
     <div id="footer">
-  Generated on Tue Sep 14 13:21:19 2010 by 
+  Generated on Wed Oct 20 07:46:42 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.9.1).
 </div>
