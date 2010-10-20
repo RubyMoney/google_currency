@@ -1,3 +1,15 @@
+Google Currency 1.0.2
+=====================
+
+Features
+--------
+ - Replace `eval` with `JSON.parse`
+ - Use BigDecimal instead of Float
+
+Bugfixes
+--------
+ - Quell parenthetical warnings in specs
+
 Google Currency 1.0.1
 =====================
 
