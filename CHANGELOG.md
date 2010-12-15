@@ -1,3 +1,10 @@
+Google Currency 1.0.3
+=====================
+
+Features
+--------
+ - Update `money` requirement to `~> 3.5`
+
 Google Currency 1.0.2
 =====================
 
