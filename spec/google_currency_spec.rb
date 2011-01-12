@@ -32,14 +32,14 @@ describe "GoogleCurrency" do
   end
 
   describe "#get_rate" do
-    it "should use #get_google_rate when rate is unknown" do
-      @bank.should_receive(:get_google_rate).once
+    it "should use #fetch_rate when rate is unknown" do
+      @bank.should_receive(:fetch_rate).once
       @bank.get_rate('USD', 'USD')
     end
 
-    it "should not use #get_google_rate when rate is known" do
+    it "should not use #fetch_rate when rate is known" do
       @bank.get_rate('USD', 'USD')
-      @bank.should_not_receive(:get_google_rate)
+      @bank.should_not_receive(:fetch_rate)
       @bank.get_rate('USD', 'USD')
     end
 

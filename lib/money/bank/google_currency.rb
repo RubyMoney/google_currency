@@ -5,6 +5,10 @@ require 'json'
 class Money
   module Bank
     class GoogleCurrency < Money::Bank::VariableExchange
+
+      SERVICE_HOST = "www.google.com"
+      SERVICE_PATH = "/ig/calculator"
+
       # @return [Hash] Stores the currently known rates.
       attr_reader :rates
 
@@ -58,7 +62,7 @@ class Money
       #   @bank.get_rate(:USD, :EUR)  #=> 0.776337241
       def get_rate(from, to)
         @mutex.synchronize{
-          @rates[rate_key_for(from, to)] ||= get_google_rate(from, to)
+          @rates[rate_key_for(from, to)] ||= fetch_rate(from, to)
         }
       end
 
@@ -74,26 +78,37 @@ class Money
       # @example
       #   @bank = GoogleCurrency.new         #=> <Money::Bank::GoogleCurrency...>
       #   @bank.get_google_rate(:USD, :EUR)  #=> 0.776337241
+      #
+      # @deprecated
       def get_google_rate(from, to)
+        warn "#get_google_rate is deprecated, please use #get_rate"
+        fetch_rate(from, to)
+      end
+
+      private
+
+      def fetch_rate(from, to)
         from = Currency.wrap(from)
         to   = Currency.wrap(to)
 
         uri = URI::HTTP.build(
-          :host  => "www.google.com",
-          :path  => "/ig/calculator",
+          :host  => SERVICE_HOST,
+          :path  => SERVICE_PATH,
           :query => "hl=en&q=1#{from.iso_code}%3D%3F#{to.iso_code}"
         )
-        data = uri.read
-
-        data.gsub!(/lhs:/, '"lhs":')
-        data.gsub!(/rhs:/, '"rhs":')
-        data.gsub!(/error:/, '"error":')
-        data.gsub!(/icc:/, '"icc":')
-        data = JSON.parse(data)
+        data = fix_response_json_data(uri.read)
 
         error = data['error']
         raise UnknownRate unless error == '' || error == '0'
         BigDecimal(data['rhs'].split(' ')[0])
+      end
+
+      def fix_response_json_data(data)
+        data.gsub!(/lhs:/, '"lhs":')
+        data.gsub!(/rhs:/, '"rhs":')
+        data.gsub!(/error:/, '"error":')
+        data.gsub!(/icc:/, '"icc":')
+        JSON.parse(data)
       end
     end
   end
