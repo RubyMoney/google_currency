@@ -78,7 +78,13 @@ class Money
         from = Currency.wrap(from)
         to   = Currency.wrap(to)
 
-        data = URI.parse("http://www.google.com/ig/calculator?hl=en&q=1#{from.iso_code}%3D%3F#{to.iso_code}").read
+        uri = URI::HTTP.build(
+          :host  => "www.google.com",
+          :path  => "/ig/calculator",
+          :query => "hl=en&q=1#{from.iso_code}%3D%3F#{to.iso_code}"
+        )
+        data = uri.read
+
         data.gsub!(/lhs:/, '"lhs":')
         data.gsub!(/rhs:/, '"rhs":')
         data.gsub!(/error:/, '"error":')
