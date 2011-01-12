@@ -69,7 +69,6 @@ class Money
       ##
       # Returns the requested rate after querying Google.
       #
-      #
       # @param [String, Symbol, Currency] from Currency to convert from
       # @param [String, Symbol, Currency] to Currency to convert to
       #
@@ -87,6 +86,13 @@ class Money
 
       private
 
+      ##
+      # Queries for the requested rate and returns it.
+      #
+      # @param [String, Symbol, Currency] from Currency to convert from
+      # @param [String, Symbol, Currency] to Currency to convert to
+      #
+      # @return [Float] The requested rate.
       def fetch_rate(from, to)
         from = Currency.wrap(from)
         to   = Currency.wrap(to)
@@ -103,6 +109,12 @@ class Money
         BigDecimal(data['rhs'].split(' ')[0])
       end
 
+      ##
+      # Takes the invalid JSON returned by Google and fixes it.
+      #
+      # @param [String] data The JSON string to fix.
+      #
+      # @return [Hash]
       def fix_response_json_data(data)
         data.gsub!(/lhs:/, '"lhs":')
         data.gsub!(/rhs:/, '"rhs":')
