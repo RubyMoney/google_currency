@@ -94,19 +94,29 @@ class Money
       #
       # @return [Float] The requested rate.
       def fetch_rate(from, to)
-        from = Currency.wrap(from)
-        to   = Currency.wrap(to)
+        from, to = Currency.wrap(from), Currency.wrap(to)
 
+        data = build_uri(from, to).read
+        data = fix_response_json_data(data)
+
+        error = data['error']
+        raise UnknownRate unless error == '' || error == '0'
+        BigDecimal(data['rhs'].split(' ')[0])
+      end
+
+      ##
+      # Build a URI for the given arguments.
+      #
+      # @param [Currency] from The currency to convert from.
+      # @param [Currency] to The currency to convert to.
+      #
+      # @return [URI::HTTP]
+      def build_uri(from, to)
         uri = URI::HTTP.build(
           :host  => SERVICE_HOST,
           :path  => SERVICE_PATH,
           :query => "hl=en&q=1#{from.iso_code}%3D%3F#{to.iso_code}"
         )
-        data = fix_response_json_data(uri.read)
-
-        error = data['error']
-        raise UnknownRate unless error == '' || error == '0'
-        BigDecimal(data['rhs'].split(' ')[0])
       end
 
       ##
