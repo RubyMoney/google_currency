@@ -49,8 +49,7 @@ class Money
       end
 
       ##
-      # Returns the requested rate from @rates if it exists, otherwise calls
-      # +#get_google_rate+.
+      # Returns the requested rate.
       #
       # @param [String, Symbol, Currency] from Currency to convert from
       # @param [String, Symbol, Currency] to Currency to convert to
