@@ -1,3 +1,15 @@
+Google Currency 1.1.0
+=====================
+
+Features
+--------
+ - Deprecated #get_google_rate, use #get_rate (thanks RMU Alumni)
+
+Bugfixes
+---------
+ - Fixed an issue when rates over 1000 did not parse correctly (thanks Brandon
+   Anderson)
+
 Google Currency 1.0.3
 =====================
 
