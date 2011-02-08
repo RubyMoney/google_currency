@@ -101,7 +101,7 @@ class Money
 
         error = data['error']
         raise UnknownRate unless error == '' || error == '0'
-        BigDecimal(data['rhs'].split(' ')[0])
+        BigDecimal(data['rhs'].gsub(/[^\d\.]/, ''))
       end
 
       ##
