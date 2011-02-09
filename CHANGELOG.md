@@ -1,3 +1,11 @@
+Google Currency 1.1.1
+=====================
+
+Bugfixes
+--------
+ - Built gem using Ruby 1.8.7 to bypass a known error with RubyGems 1.5.0 and
+   Ruby 1.9.2
+
 Google Currency 1.1.0
 =====================
 
