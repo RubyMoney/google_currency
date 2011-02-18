@@ -18,9 +18,9 @@ Gem::Specification.new do |s|
 
   s.requirements << "json"
 
-  s.files        = Dir.glob("lib/**/*") + %w(LICENSE README.md CHANGELOG.md)
-  s.require_path = "lib"
+  s.files =  Dir.glob("{lib,spec}/**/*")
+  s.files += %w(LICENSE README.md CHANGELOG.md)
+  s.files += %w(Rakefile .gemtest google_currency.gemspec)
 
-  s.extra_rdoc_files = %w(LICENSE README.md CHANGELOG.md)
-  s.rdoc_options = ["--charset=UTF-8"]
+  s.require_path = "lib"
 end
