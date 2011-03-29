@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.summary     = "Access the Google Currency exchange rate data."
   s.description = "GoogleCurrency extends Money::Bank::Base and gives you access to the current Google Currency exchange rates."
 
-  s.required_rubygems_version = ">= 1.3.7"
+  s.required_rubygems_version = ">= 1.3.6"
 
   s.add_development_dependency "rspec", ">= 2.0.0"
   s.add_development_dependency "yard", ">= 0.5.8"
