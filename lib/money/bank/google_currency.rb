@@ -1,6 +1,6 @@
 require 'money'
 require 'open-uri'
-require 'json'
+require 'multi_json'
 
 class Money
   module Bank
@@ -129,7 +129,8 @@ class Money
         data.gsub!(/rhs:/, '"rhs":')
         data.gsub!(/error:/, '"error":')
         data.gsub!(/icc:/, '"icc":')
-        JSON.parse(data)
+
+        MultiJson.decode(data)
       end
     end
   end

@@ -3,6 +3,10 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 require 'money'
 require 'money/bank/google_currency'
 
+## require one of the JSON libraries supported by MultiJson
+require 'json'
+# require 'yajl'
+
 describe "GoogleCurrency" do
   before :each do
     @bank = Money::Bank::GoogleCurrency.new
