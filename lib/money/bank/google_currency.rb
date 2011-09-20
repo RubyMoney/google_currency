@@ -129,6 +129,7 @@ class Money
         data.gsub!(/rhs:/, '"rhs":')
         data.gsub!(/error:/, '"error":')
         data.gsub!(/icc:/, '"icc":')
+        data.gsub!(/(\xc2\xa0|\240)/, '')
 
         MultiJson.decode(data)
       end
