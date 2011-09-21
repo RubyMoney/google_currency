@@ -3,9 +3,8 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 require 'money'
 require 'money/bank/google_currency'
 
-## require one of the JSON libraries supported by MultiJson
 require 'json'
-# require 'yajl'
+MultiJson.engine = :json_gem
 
 describe "GoogleCurrency" do
   before :each do
