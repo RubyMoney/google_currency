@@ -65,24 +65,6 @@ class Money
         }
       end
 
-      ##
-      # Returns the requested rate after querying Google.
-      #
-      # @param [String, Symbol, Currency] from Currency to convert from
-      # @param [String, Symbol, Currency] to Currency to convert to
-      #
-      # @return [Float] The requested rate.
-      #
-      # @example
-      #   @bank = GoogleCurrency.new         #=> <Money::Bank::GoogleCurrency...>
-      #   @bank.get_google_rate(:USD, :EUR)  #=> 0.776337241
-      #
-      # @deprecated
-      def get_google_rate(from, to)
-        warn "#get_google_rate is deprecated, please use #get_rate"
-        fetch_rate(from, to)
-      end
-
       private
 
       ##
