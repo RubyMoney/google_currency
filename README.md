@@ -1,6 +1,8 @@
 Google Currency
 ===============
 
+[![Build Status](https://secure.travis-ci.org/RubyMoney/google_currency.png)](http://travis-ci.org/RubyMoney/google_currency)
+
 This gem extends Money::Bank::VariableExchange with Money::Bank::GoogleCurrency
 and gives you access to the current Google Currency exchange rates.
 
