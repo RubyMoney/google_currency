@@ -18,5 +18,8 @@ pkg
 doc
 .yardoc
 *.gem
+Gemfile.lock
+.bundle
+vendor/ruby
 
 ## PROJECT::SPECIFIC
