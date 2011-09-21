@@ -1,3 +1,15 @@
+Google Currency 2.0.0
+=====================
+
+Features
+--------
+ - Added multi_json to allow users to select their own JSON parsing engine.
+ - Removed deprecated method #get_google_rate.
+
+Bugfixes
+--------
+ - Updated deprecated rake tasks
+
 Google Currency 1.1.1
 =====================
 
