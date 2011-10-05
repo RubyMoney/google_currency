@@ -73,7 +73,7 @@ class Money
       # @param [String, Symbol, Currency] from Currency to convert from
       # @param [String, Symbol, Currency] to Currency to convert to
       #
-      # @return [Float] The requested rate.
+      # @return [BigDecimal] The requested rate.
       def fetch_rate(from, to)
         from, to = Currency.wrap(from), Currency.wrap(to)
 
@@ -82,10 +82,7 @@ class Money
 
         error = data['error']
         raise UnknownRate unless error == '' || error == '0'
-        rate = BigDecimal(data['rhs'].match(/\d[\d\s]*\.?\d*/)[0])
-        power = data['rhs'].match(/10x3csupx3e(-?\d+)x3c\/supx3e/)
-        rate *= 10**power[1].to_i unless power.nil?
-        rate
+        decode_rate data['rhs']
       end
 
       ##
@@ -114,9 +111,58 @@ class Money
         data.gsub!(/rhs:/, '"rhs":')
         data.gsub!(/error:/, '"error":')
         data.gsub!(/icc:/, '"icc":')
-        data.gsub!(/(\xc2\xa0|\240)/, '')
+        data.gsub!(/(\\x..|\240)/, '')
 
         MultiJson.decode(data)
+      end
+
+      ##
+      # Takes the 'rhs' response from Google and decodes it.
+      #
+      # @param [String] rhs The google rate string to decode.
+      #
+      # @return [BigDecimal]
+      def decode_rate(rhs)
+        if complex_rate?(rhs)
+          decode_complex_rate(rhs)
+        else
+          decode_basic_rate(rhs)
+        end
+      end
+
+      ##
+      # Takes the 'rhs' response from Google and decides if it's a complex rate
+      #
+      # @param [String] rhs The google rate string to check.
+      #
+      # @return [Boolean]
+      def complex_rate?(rhs)
+        rhs.match(/10x3csupx3e(-?\d+)x3c\/supx3e/)
+      end
+
+      ##
+      # Takes a complex 'rhs' response from Google and converts it to a numeric
+      # rate.
+      #
+      # @param [String] rhs The complex google rate string to convert.
+      #
+      # @return [BigDecimal]
+      def decode_complex_rate(rhs)
+        rate  = BigDecimal(rhs.match(/\d[\d\s]*\.?\d*/)[0])
+        power = rhs.match(/10x3csupx3e(-?\d+)x3c\/supx3e/)
+
+        rate * 10**power[1].to_i
+      end
+
+      ##
+      # Takes a basic 'rhs' response from Google and converts it to a numeric
+      # rate.
+      #
+      # @param [String] rhs The basic google rate string to convert.
+      #
+      # @return [BigDecimal]
+      def decode_basic_rate(rhs)
+        BigDecimal(rhs.gsub(/[^\d\.]/, ''))
       end
     end
   end
