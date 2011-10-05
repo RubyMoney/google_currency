@@ -82,7 +82,10 @@ class Money
 
         error = data['error']
         raise UnknownRate unless error == '' || error == '0'
-        BigDecimal(data['rhs'].gsub(/[^\d\.]/, ''))
+        rate = BigDecimal(data['rhs'].match(/\d[\d\s]*\.?\d*/)[0])
+        power = data['rhs'].match(/10x3csupx3e(-?\d+)x3c\/supx3e/)
+        rate *= 10**power[1].to_i unless power.nil?
+        rate
       end
 
       ##
