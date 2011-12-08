@@ -1,3 +1,14 @@
+Google Currency 2.0.1
+=====================
+
+Features
+--------
+ - Handles funky exchange rates (Arnaud Joubay)
+
+Bugfixes
+--------
+ - Fix for running under 1.9.2 in TextMate (larspind)
+
 Google Currency 2.0.0
 =====================
 
