@@ -1,3 +1,10 @@
+Google Currency 2.0.2
+=====================
+
+Bugfixes
+--------
+ - Fix encoding issue
+
 Google Currency 2.0.1
 =====================
 
