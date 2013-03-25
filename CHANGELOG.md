@@ -1,3 +1,8 @@
+Google Currency 2.2.0
+=====================
+
+- Update money dependency to ~> 5.1.0
+
 Google Currency 2.1.0
 =====================
 
