@@ -107,6 +107,8 @@ class Money
       #
       # @return [Hash]
       def fix_response_json_data(data)
+        data = data.force_encoding("ISO-8859-1").encode("UTF-8")
+
         data.gsub!(/lhs:/, '"lhs":')
         data.gsub!(/rhs:/, '"rhs":')
         data.gsub!(/error:/, '"error":')
