@@ -33,7 +33,6 @@ describe "GoogleCurrency" do
     end
 
     context "handles" do
-
       before :each do
         @uri = double('uri')
         @bank.stub(:build_uri){ |from,to| @uri }
@@ -49,7 +48,6 @@ describe "GoogleCurrency" do
         @uri.stub(:read) { "{lhs: \"1 U.S. dollar\",rhs: \"10\xA0000 Indonesian rupiahs\",error: \"\",icc: true}" }
         @bank.get_rate('IDR', 'USD').should == BigDecimal("0.1E5")
       end
-
     end
   end
 
