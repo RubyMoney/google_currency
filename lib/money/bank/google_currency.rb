@@ -8,6 +8,7 @@ class Money
 
       SERVICE_HOST = "www.google.com"
       SERVICE_PATH = "/ig/calculator"
+      EXPONENT_REGEXP = /10(x3c)?sup(x3e)?(?<exponent>-?\d+)(x3c)?\/sup(x3e)?/
 
       # @return [Hash] Stores the currently known rates.
       attr_reader :rates
@@ -139,7 +140,7 @@ class Money
       #
       # @return [Boolean]
       def complex_rate?(rhs)
-        rhs.match(/10x3csupx3e(-?\d+)x3c\/supx3e/)
+        rhs.match(EXPONENT_REGEXP)
       end
 
       ##
@@ -151,9 +152,9 @@ class Money
       # @return [BigDecimal]
       def decode_complex_rate(rhs)
         rate  = BigDecimal(rhs.match(/\d[\d\s]*\.?\d*/)[0])
-        power = rhs.match(/10x3csupx3e(-?\d+)x3c\/supx3e/)
+        power = rhs.match(EXPONENT_REGEXP)
 
-        rate * 10**power[1].to_i
+        rate * BigDecimal("1E#{power[:exponent]}")
       end
 
       ##

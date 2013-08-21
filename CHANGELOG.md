@@ -1,3 +1,8 @@
+master
+======
+
+- fix incorrect parsing of complex rates
+
 Google Currency 2.2.0
 =====================
 
