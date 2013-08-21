@@ -36,7 +36,7 @@ describe "GoogleCurrency" do
       uri = double('uri')
       @bank.stub(:build_uri){|from,to| uri }
       uri.stub(:read) { %q({lhs: "1 Vietnamese dong",rhs: "4.8 \x26#215; 10\x3csup\x3e-5\x3c/sup\x3e U.S. dollars",error: "",icc: true}) }
-      @bank.get_rate('VND', 'USD').should == BigDecimal("0.48215105E1")
+      @bank.get_rate('VND', 'USD').should == BigDecimal("4.8E-5")
     end
   end
 
