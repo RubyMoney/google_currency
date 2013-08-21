@@ -4,5 +4,4 @@ rvm:
   - rbx
   - jruby
 notifications:
-  email:
-    - semmons99@gmail.com
+  email: false
