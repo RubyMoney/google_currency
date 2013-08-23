@@ -33,22 +33,21 @@ describe "GoogleCurrency" do
     end
 
     context "handles" do
-
       before :each do
         @uri = double('uri')
         @bank.stub(:build_uri){ |from,to| @uri }
       end
 
       it "Vietnamese Dong" do
+        # rhs decodes (after html entity decoding) to "4.8 x 10<sup>-5</sup> U.S. dollars"
         @uri.stub(:read) { %q({lhs: "1 Vietnamese dong",rhs: "4.8 \x26#215; 10\x3csup\x3e-5\x3c/sup\x3e U.S. dollars",error: "",icc: true}) }
-        @bank.get_rate('VND', 'USD').should == BigDecimal("0.48215105E1")
+        @bank.get_rate('VND', 'USD').should == BigDecimal("4.8E-5")
       end
 
-      it "Indonesian Rupie" do
+      it "Indonesian Rupiah" do
         @uri.stub(:read) { "{lhs: \"1 U.S. dollar\",rhs: \"10\xA0000 Indonesian rupiahs\",error: \"\",icc: true}" }
         @bank.get_rate('IDR', 'USD').should == BigDecimal("0.1E5")
       end
-
     end
   end
 
