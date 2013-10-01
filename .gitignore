@@ -25,3 +25,4 @@ vendor/ruby
 ## PROJECT::SPECIFIC
 .rbenv-version
 .rbx
+.ruby-version
