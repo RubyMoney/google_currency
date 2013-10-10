@@ -13,6 +13,32 @@ class Money
       # @return [Hash] Stores the currently known rates.
       attr_reader :rates
 
+
+      class << self
+        # @return [Integer] Returns the Time To Live (TTL) in seconds.
+        attr_reader :ttl_in_seconds
+
+        # @return [Time] Returns the time when the rates expire.
+        attr_reader :rates_expiration
+
+        ##
+        # Set the Time To Live (TTL) in seconds.
+        #
+        # @param [Integer] the seconds between an expiration and another.
+        def ttl_in_seconds=(value)
+          @ttl_in_seconds = value
+          refresh_rates_expiration! if ttl_in_seconds
+        end
+
+        ##
+        # Set the rates expiration TTL seconds from the current time.
+        #
+        # @return [Time] The next expiration.
+        def refresh_rates_expiration!
+          @rates_expiration = Time.now + ttl_in_seconds
+        end
+      end
+
       ##
       # Clears all rates stored in @rates
       #
@@ -52,6 +78,8 @@ class Money
       ##
       # Returns the requested rate.
       #
+      # It also flushes all the rates when and if they are expired.
+      #
       # @param [String, Symbol, Currency] from Currency to convert from
       # @param [String, Symbol, Currency] to Currency to convert to
       #
@@ -61,9 +89,25 @@ class Money
       #   @bank = GoogleCurrency.new  #=> <Money::Bank::GoogleCurrency...>
       #   @bank.get_rate(:USD, :EUR)  #=> 0.776337241
       def get_rate(from, to)
+        expire_rates
+
         @mutex.synchronize{
           @rates[rate_key_for(from, to)] ||= fetch_rate(from, to)
         }
+      end
+
+      ##
+      # Flushes all the rates if they are expired.
+      #
+      # @return [Boolean]
+      def expire_rates
+        if self.class.ttl_in_seconds && self.class.rates_expiration <= Time.now
+          flush_rates
+          self.class.refresh_rates_expiration!
+          true
+        else
+          false
+        end
       end
 
       private
