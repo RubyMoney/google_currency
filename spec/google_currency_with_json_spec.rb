@@ -3,9 +3,6 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 require 'money'
 require 'money/bank/google_currency'
 
-require 'json'
-MultiJson.engine = :json_gem
-
 describe "GoogleCurrency" do
   before :each do
     @bank = Money::Bank::GoogleCurrency.new
@@ -58,15 +55,23 @@ describe "GoogleCurrency" do
         @bank.stub(:build_uri){ |from,to| @uri }
       end
 
-      it "Vietnamese Dong" do
-        # rhs decodes (after html entity decoding) to "4.8 x 10<sup>-5</sup> U.S. dollars"
-        @uri.stub(:read) { %q({lhs: "1 Vietnamese dong",rhs: "4.8 \x26#215; 10\x3csup\x3e-5\x3c/sup\x3e U.S. dollars",error: "",icc: true}) }
-        @bank.get_rate('VND', 'USD').should == BigDecimal("4.8E-5")
+      it "should return rate when it is known" do
+        @uri.stub(:read) { load_rate_http_response("sgd_to_usd") }
+        @bank.get_rate('SGD', 'USD').should == BigDecimal("0.8066")
       end
 
-      it "Indonesian Rupiah" do
-        @uri.stub(:read) { "{lhs: \"1 U.S. dollar\",rhs: \"10\xA0000 Indonesian rupiahs\",error: \"\",icc: true}" }
-        @bank.get_rate('IDR', 'USD').should == BigDecimal("0.1E5")
+      it "should raise UnknownRate error when rate is not known" do
+        @uri.stub(:read) { load_rate_http_response("vnd_to_usd") }
+        expect {
+          @bank.get_rate('VND', 'USD')
+        }.to raise_error(Money::Bank::UnknownRate)
+      end
+
+      it "should raise GoogleCurrencyFetchError there is an unknown issue with extracting the exchange rate" do
+        @uri.stub(:read) { load_rate_http_response("error") }
+        expect {
+          @bank.get_rate('VND', 'USD')
+        }.to raise_error(Money::Bank::GoogleCurrencyFetchError)
       end
     end
   end
