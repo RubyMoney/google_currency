@@ -1,14 +1,18 @@
 require 'money'
 require 'open-uri'
-require 'multi_json'
 
 class Money
   module Bank
+    # Raised when there is an unexpected error in extracting exchange rates
+    # from Google Finance Calculator
+    class GoogleCurrencyFetchError < Error
+    end
+
     class GoogleCurrency < Money::Bank::VariableExchange
 
+
       SERVICE_HOST = "www.google.com"
-      SERVICE_PATH = "/ig/calculator"
-      EXPONENT_REGEXP = /10(x3c)?sup(x3e)?(?<exponent>-?\d+)(x3c)?\/sup(x3e)?/
+      SERVICE_PATH = "/finance/converter"
 
       # @return [Hash] Stores the currently known rates.
       attr_reader :rates
@@ -121,13 +125,8 @@ class Money
       # @return [BigDecimal] The requested rate.
       def fetch_rate(from, to)
         from, to = Currency.wrap(from), Currency.wrap(to)
-
         data = build_uri(from, to).read
-        data = fix_response_json_data(data)
-
-        error = data['error']
-        raise UnknownRate unless error == '' || error == '0'
-        decode_rate data['rhs']
+        extract_rate(data)
       end
 
       ##
@@ -141,75 +140,25 @@ class Money
         uri = URI::HTTP.build(
           :host  => SERVICE_HOST,
           :path  => SERVICE_PATH,
-          :query => "hl=en&q=1#{from.iso_code}%3D%3F#{to.iso_code}"
+          :query => "a=1&from=#{from.iso_code}&to=#{to.iso_code}"
         )
       end
 
       ##
-      # Takes the invalid JSON returned by Google and fixes it.
+      # Takes the response from Google and extract the rate.
       #
-      # @param [String] data The JSON string to fix.
-      #
-      # @return [Hash]
-      def fix_response_json_data(data)
-        data = data.force_encoding("ISO-8859-1").encode("UTF-8")
-
-        data.gsub!(/lhs:/, '"lhs":')
-        data.gsub!(/rhs:/, '"rhs":')
-        data.gsub!(/error:/, '"error":')
-        data.gsub!(/icc:/, '"icc":')
-        data.gsub!(Regexp.new("(\\\\x..|\\\\240)"), '')
-
-        MultiJson.decode(data)
-      end
-
-      ##
-      # Takes the 'rhs' response from Google and decodes it.
-      #
-      # @param [String] rhs The google rate string to decode.
+      # @param [String] data The google rate string to decode.
       #
       # @return [BigDecimal]
-      def decode_rate(rhs)
-        if complex_rate?(rhs)
-          decode_complex_rate(rhs)
+      def extract_rate(data)
+        case data
+        when /<span class=bld>(\d+\.?\d*) [A-Z]{3}<\/span>/
+          BigDecimal($1)
+        when /Could not convert\./
+          raise UnknownRate
         else
-          decode_basic_rate(rhs)
+          raise GoogleCurrencyFetchError
         end
-      end
-
-      ##
-      # Takes the 'rhs' response from Google and decides if it's a complex rate
-      #
-      # @param [String] rhs The google rate string to check.
-      #
-      # @return [Boolean]
-      def complex_rate?(rhs)
-        rhs.match(EXPONENT_REGEXP)
-      end
-
-      ##
-      # Takes a complex 'rhs' response from Google and converts it to a numeric
-      # rate.
-      #
-      # @param [String] rhs The complex google rate string to convert.
-      #
-      # @return [BigDecimal]
-      def decode_complex_rate(rhs)
-        rate  = BigDecimal(rhs.match(/\d[\d\s]*\.?\d*/)[0])
-        power = rhs.match(EXPONENT_REGEXP)
-
-        rate * BigDecimal("1E#{power[:exponent]}")
-      end
-
-      ##
-      # Takes a basic 'rhs' response from Google and converts it to a numeric
-      # rate.
-      #
-      # @param [String] rhs The basic google rate string to convert.
-      #
-      # @return [BigDecimal]
-      def decode_basic_rate(rhs)
-        BigDecimal(rhs.gsub(/[^\d\.]/, ''))
       end
     end
   end

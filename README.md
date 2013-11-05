@@ -6,18 +6,11 @@ Google Currency
 This gem extends Money::Bank::VariableExchange with Money::Bank::GoogleCurrency
 and gives you access to the current Google Currency exchange rates.
 
-You have to load one of the JSON libraries supported by
-[MultiJSON](https://github.com/intridea/multi_json) (`json` for example)
-if it's not already loaded by your application. In a Rails application,
-ActiveSupport provides a JSON implementation that is automatically recognized.
-
 Usage
 -----
 
     require 'money'
     require 'money/bank/google_currency'
-    require 'json'
-    MultiJson.engine = :json_gem # or :yajl
 
     # (optional)
     # set the seconds after than the current rates are automatically expired
@@ -36,6 +29,8 @@ that `Money` knows, but Google does not.
 
 An `UnknownCurrency` will be thrown if `#exchange_to` is called with a
 `Currency` that `Money` does not know.
+
+A `GoogleCurrencyFetchError` will be thrown if there is an unknown issue with the Google Finance Converter API.
 
 Copyright
 ---------
