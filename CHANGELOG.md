@@ -1,6 +1,7 @@
-master
-======
+3.0.0
+=====
 
+- Google closed ig/calculator, so we're now using finance/calculator
 - fix incorrect parsing of complex rates
 
 Google Currency 2.2.0
