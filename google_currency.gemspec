@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "google_currency"
-  s.version     = "3.0.0"
+  s.version     = "3.1.0"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Shane Emmons"]
   s.email       = ["semmons99@gmail.com"]
@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "yard", ">= 0.5.8"
   s.add_development_dependency "ffi"
 
-  s.add_dependency "money", "~> 5.1.1"
+  s.add_dependency "money", "~> 6.0"
 
   s.files =  Dir.glob("{lib,spec}/**/*")
   s.files += %w(LICENSE README.md CHANGELOG.md AUTHORS)
