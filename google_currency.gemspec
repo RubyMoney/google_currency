@@ -7,6 +7,7 @@ Gem::Specification.new do |s|
   s.homepage    = "http://rubymoney.github.com/google_currency"
   s.summary     = "Access the Google Currency exchange rate data."
   s.description = "GoogleCurrency extends Money::Bank::Base and gives you access to the current Google Currency exchange rates."
+  s.license     = 'MIT'
 
   s.required_rubygems_version = ">= 1.3.6"
 
