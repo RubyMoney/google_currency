@@ -104,7 +104,7 @@ class Money
             retries += 1
             if retries < 3
               retry
-            elsif pre_expired_rate
+            elsif preexpired_rate
               # We got an error fetching the rate. Re-cache expired rate.
               return @rates[rate_key_for(from, to)] ||= preexpired_rate
             else
