@@ -21,8 +21,12 @@ Usage
     Money.default_bank = Money::Bank::GoogleCurrency.new
 
     # create a new money object, and use the standard #exchange_to method
-    n = 1.to_money(:USD)
-    n.exchange_to(:EUR)
+    money = Money.new(1_00, "USD") # amount is in cents
+    money.exchange_to(:EUR)
+
+    # or install the 'monetize' gem
+    money = 1.to_money(:USD)
+    money.exchange_to(:EUR)
 
 An `UnknownRate` will be thrown if `#exchange_to` is called with a `Currency`
 that `Money` knows, but Google does not.
