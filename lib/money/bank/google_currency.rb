@@ -93,11 +93,27 @@ class Money
       #   @bank = GoogleCurrency.new  #=> <Money::Bank::GoogleCurrency...>
       #   @bank.get_rate(:USD, :EUR)  #=> 0.776337241
       def get_rate(from, to)
+        preexpired_rate = @rates[rate_key_for(from, to)]
         expire_rates
 
-        @mutex.synchronize{
-          @rates[rate_key_for(from, to)] ||= fetch_rate(from, to)
-        }
+        @mutex.synchronize do
+          retries = 0
+          begin
+            return @rates[rate_key_for(from, to)] ||= fetch_rate(from, to)
+          rescue OpenURI::HTTPError => e
+            retries += 1
+            if retries < 3
+              retry
+            elsif preexpired_rate
+              # We got an error fetching the rate. Re-cache expired rate.
+              return @rates[rate_key_for(from, to)] ||= preexpired_rate
+            else
+              # We couldn't fall back on a cached rate so raise the error
+              # after all.
+              raise e
+            end
+          end
+        end
       end
 
       ##
