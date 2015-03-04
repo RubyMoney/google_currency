@@ -24,7 +24,8 @@ Usage
     money = Money.new(1_00, "USD") # amount is in cents
     money.exchange_to(:EUR)
 
-    # or install the 'monetize' gem
+    # or install and use the 'monetize' gem
+    require 'monetize'
     money = 1.to_money(:USD)
     money.exchange_to(:EUR)
 
@@ -39,4 +40,4 @@ A `GoogleCurrencyFetchError` will be thrown if there is an unknown issue with th
 Copyright
 ---------
 
-Copyright (c) 2011 Shane Emmons. See {file:LICENSE} for details.
+Copyright (c) 2011 Shane Emmons. See [LICENSE](LICENSE) for details.
