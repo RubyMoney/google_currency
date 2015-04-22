@@ -37,6 +37,24 @@ An `UnknownCurrency` will be thrown if `#exchange_to` is called with a
 
 A `GoogleCurrencyFetchError` will be thrown if there is an unknown issue with the Google Finance Converter API.
 
+Caveats
+-------
+
+This gem uses [Google Finance Converter](https://www.google.com/finance/converter) under the hood.
+
+Exchange rates are,
+
+1. Based on 1 unit of the original currency.
+1. Have a precision of 4 decimal places.
+
+What this means is that if the JPY to USD exchange rate is 0.0083660,
+Google will report the JPY to USD exchange rate as 0.0084.
+As a result, a larger JPY to USD conversion such as 10000 JPY to USD would yield 84 USD instead of 83.66 USD.
+
+Consequently, this means that small exchange rates will be imprecise.
+For example, if the IDR to USD exchange rate were 0.00007761, Google will report it as 0.0001.
+This means 100000 IDR would exchange to 10 USD instead of 7.76 USD.
+
 Copyright
 ---------
 
