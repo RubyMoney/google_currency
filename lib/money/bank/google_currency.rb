@@ -13,6 +13,8 @@ class Money
 
       SERVICE_HOST = "www.google.com"
       SERVICE_PATH = "/finance/converter"
+      INVERSE_PAIRS = ["IDR", "JPY", "KES", "INR"]
+
 
       # @return [Hash] Stores the currently known rates.
       attr_reader :rates
@@ -124,9 +126,17 @@ class Money
       #
       # @return [BigDecimal] The requested rate.
       def fetch_rate(from, to)
+
         from, to = Currency.wrap(from), Currency.wrap(to)
-        data = build_uri(from, to).read
-        extract_rate(data)
+
+        if INVERSE_PAIRS.include? from    
+            data = build_uri(to, from).read
+            1/extract_rate(data)
+        else
+            data = build_uri(from, to).read
+            extract_rate(data)
+        end
+
       end
 
       ##
