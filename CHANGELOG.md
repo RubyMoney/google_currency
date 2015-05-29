@@ -1,3 +1,7 @@
+3.2.1
+=====
+- Increase precision of rates by using inverse reciprocals for certain currencyes
+
 3.0.0
 =====
 
