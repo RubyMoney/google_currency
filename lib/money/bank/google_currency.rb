@@ -13,7 +13,6 @@ class Money
 
       SERVICE_HOST = "www.google.com"
       SERVICE_PATH = "/finance/converter"
-      INVERSE_PAIRS = ["IDR", "JPY", "KES", "INR"]
 
 
       # @return [Hash] Stores the currently known rates.
@@ -129,13 +128,14 @@ class Money
 
         from, to = Currency.wrap(from), Currency.wrap(to)
 
-        if INVERSE_PAIRS.include? from    
-            data = build_uri(to, from).read
-            1/extract_rate(data)
-        else
-            data = build_uri(from, to).read
-            extract_rate(data)
+        data = build_uri(from, to).read
+        rate = extract_rate(data);
+
+        if (rate < 0.1)
+          rate = 1/extract_rate(build_uri(to, from).read)
         end
+
+        rate
 
       end
 
