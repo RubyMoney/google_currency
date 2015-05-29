@@ -14,6 +14,7 @@ class Money
       SERVICE_HOST = "www.google.com"
       SERVICE_PATH = "/finance/converter"
 
+
       # @return [Hash] Stores the currently known rates.
       attr_reader :rates
 
@@ -124,9 +125,18 @@ class Money
       #
       # @return [BigDecimal] The requested rate.
       def fetch_rate(from, to)
+
         from, to = Currency.wrap(from), Currency.wrap(to)
+
         data = build_uri(from, to).read
-        extract_rate(data)
+        rate = extract_rate(data);
+
+        if (rate < 0.1)
+          rate = 1/extract_rate(build_uri(to, from).read)
+        end
+
+        rate
+
       end
 
       ##
