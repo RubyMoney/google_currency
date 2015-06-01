@@ -173,3 +173,22 @@ class Money
     end
   end
 end
+
+# Fix for https://github.com/RubyMoney/google_currency/issues/38
+# Google considers the Chilean Peso to have 100 Centavos, despite
+# ISO standards indicating otherwise http://en.wikipedia.org/wiki/ISO_4217
+Money::Currency.class_eval do 
+  class<< self
+    default_table = instance_method(:table)
+
+    define_method(:table) do 
+      default_currencies = default_table.bind(self).call
+
+      unless default_currencies[:clp][:subunit_to_unit] == 100
+        default_currencies[:clp][:subunit_to_unit] = 100
+      end
+
+      return default_currencies
+    end
+  end
+end
