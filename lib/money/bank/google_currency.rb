@@ -1,6 +1,11 @@
 require 'money'
 require 'open-uri'
 
+# Fix for https://github.com/RubyMoney/google_currency/issues/38
+# Google considers the Chilean Peso to have 100 Centavos, despite
+# ISO standards indicating otherwise http://en.wikipedia.org/wiki/ISO_4217
+Money::Currency.table[:clp][:subunit_to_unit] = 100
+
 class Money
   module Bank
     # Raised when there is an unexpected error in extracting exchange rates
