@@ -1,4 +1,5 @@
 require 'money'
+require 'money/rates_store/rate_removal_support'
 require 'open-uri'
 
 # Fix for https://github.com/RubyMoney/google_currency/issues/38
@@ -49,6 +50,11 @@ class Money
         end
       end
 
+      def initialize(*)
+        super
+        @store.extend Money::RatesStore::RateRemovalSupport
+      end
+
       ##
       # Clears all rates stored in @rates
       #
@@ -59,9 +65,7 @@ class Money
       #   @bank.get_rate(:USD, :EUR)  #=> 0.776337241
       #   @bank.flush_rates           #=> {}
       def flush_rates
-        @mutex.synchronize{
-          @rates = {}
-        }
+        store.clear_rates
       end
 
       ##
@@ -79,10 +83,7 @@ class Money
       #   @bank.get_rate(:USD, :EUR)    #=> 0.776337241
       #   @bank.flush_rate(:USD, :EUR)  #=> 0.776337241
       def flush_rate(from, to)
-        key = rate_key_for(from, to)
-        @mutex.synchronize{
-          @rates.delete(key)
-        }
+        store.remove_rate(from, to)
       end
 
       ##
@@ -100,10 +101,7 @@ class Money
       #   @bank.get_rate(:USD, :EUR)  #=> 0.776337241
       def get_rate(from, to)
         expire_rates
-
-        @mutex.synchronize{
-          @rates[rate_key_for(from, to)] ||= fetch_rate(from, to)
-        }
+        store.get_rate(from, to) || store.add_rate(from, to, fetch_rate(from, to))
       end
 
       ##
