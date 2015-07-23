@@ -46,7 +46,7 @@ describe "GoogleCurrency" do
 
     it "should store the rate for faster retreival" do
       @bank.get_rate('USD', 'EUR')
-      expect(@bank.rates).to include('USD_TO_EUR')
+      expect(@bank.store.instance_variable_get("@index")).to include('USD_TO_EUR')
     end
 
     context "handles" do
@@ -80,7 +80,7 @@ describe "GoogleCurrency" do
     it "should empty @rates" do
       @bank.get_rate('USD', 'EUR')
       @bank.flush_rates
-      expect(@bank.rates).to eq({})
+      expect(@bank.store.instance_variable_get("@index")).to eq({})
     end
   end
 
@@ -89,8 +89,8 @@ describe "GoogleCurrency" do
       @bank.get_rate('USD', 'EUR')
       @bank.get_rate('USD', 'JPY')
       @bank.flush_rate('USD', 'EUR')
-      expect(@bank.rates).to include('USD_TO_JPY')
-      expect(@bank.rates).to_not include('USD_TO_EUR')
+      expect(@bank.store.instance_variable_get("@index")).to include('USD_TO_JPY')
+      expect(@bank.store.instance_variable_get("@index")).to_not include('USD_TO_EUR')
     end
   end
 
