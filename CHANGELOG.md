@@ -1,3 +1,8 @@
+3.3.0
+=====
+
+- Update Money gem dep
+
 3.2.1
 =====
 - Increase precision of rates by using inverse reciprocals for certain currencyes
