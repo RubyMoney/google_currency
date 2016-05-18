@@ -6,6 +6,10 @@ Google Currency
 This gem extends Money::Bank::VariableExchange with Money::Bank::GoogleCurrency
 and gives you access to the current Google Currency exchange rates.
 
+**WARNING! [Google Finance Converter](https://www.google.com/finance/converter)
+(used by this gem) has been deprecated by Google. It is still available, but no
+longer supported. Use at your own risk!**
+
 Usage
 -----
 
