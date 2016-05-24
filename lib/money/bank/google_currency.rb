@@ -128,9 +128,8 @@ class Money
 
         rate = retryable(tries: 3, on: Errno::ECONNREFUSED) do
           data = build_uri(from, to).read
+          extract_rate(data)
         end
-
-        extract_rate(data)
 
         if (rate < 0.1)
           rate = 1/extract_rate(build_uri(to, from).read)
