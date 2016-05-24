@@ -126,8 +126,11 @@ class Money
 
         from, to = Currency.wrap(from), Currency.wrap(to)
 
-        data = build_uri(from, to).read
-        rate = extract_rate(data);
+        rate = retryable(tries: 3, on: Errno::ECONNREFUSED) do
+          data = build_uri(from, to).read
+        end
+
+        extract_rate(data)
 
         if (rate < 0.1)
           rate = 1/extract_rate(build_uri(to, from).read)
@@ -167,6 +170,31 @@ class Money
         else
           raise GoogleCurrencyFetchError
         end
+      end
+
+      # * :tries - Number of retries to perform. Defaults to 1.
+      # * :on - The Exception on which a retry will be performed. Defaults to Exception, which retries on any Exception.
+      #
+      # Example
+      # =======
+      #   retryable(tries: 1, on: OpenURI::HTTPError) do
+      #     # your code here
+      #   end
+      #
+      def retryable(options = {}, &block)
+        opts = { tries: 1, on: Exception, sleep: 1 }.merge(options)
+        retry_exception, retries, sleep = opts[:on], opts[:tries], opts[:sleep]
+
+        begin
+          return yield
+        rescue retry_exception
+          if (retries -= 1) > 0
+            sleep(sleep += 1)
+            retry
+          end
+        end
+
+        yield
       end
     end
   end
