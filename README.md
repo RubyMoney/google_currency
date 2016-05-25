@@ -9,25 +9,29 @@ and gives you access to the current Google Currency exchange rates.
 Usage
 -----
 
-    require 'money'
-    require 'money/bank/google_currency'
+```ruby
 
-    # (optional)
-    # set the seconds after than the current rates are automatically expired
-    # by default, they never expire
-    Money::Bank::GoogleCurrency.ttl_in_seconds = 86400
+require 'money'
+require 'money/bank/google_currency'
 
-    # set default bank to instance of GoogleCurrency
-    Money.default_bank = Money::Bank::GoogleCurrency.new
+# (optional)
+# set the seconds after than the current rates are automatically expired
+# by default, they never expire
+Money::Bank::GoogleCurrency.ttl_in_seconds = 86400
 
-    # create a new money object, and use the standard #exchange_to method
-    money = Money.new(1_00, "USD") # amount is in cents
-    money.exchange_to(:EUR)
+# set default bank to instance of GoogleCurrency
+Money.default_bank = Money::Bank::GoogleCurrency.new
 
-    # or install and use the 'monetize' gem
-    require 'monetize'
-    money = 1.to_money(:USD)
-    money.exchange_to(:EUR)
+# create a new money object, and use the standard #exchange_to method
+money = Money.new(1_00, "USD") # amount is in cents
+money.exchange_to(:EUR)
+
+# or install and use the 'monetize' gem
+require 'monetize'
+money = 1.to_money(:USD)
+money.exchange_to(:EUR)
+
+```
 
 An `UnknownRate` will be thrown if `#exchange_to` is called with a `Currency`
 that `Money` knows, but Google does not.
