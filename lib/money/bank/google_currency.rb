@@ -126,7 +126,7 @@ class Money
 
         from, to = Currency.wrap(from), Currency.wrap(to)
 
-        rate = retryable(tries: 3, on: [Errno::ECONNREFUSED, OpenURI::HTTPError]) do
+        rate = retryable(tries: 3, on: [Errno::ECONNREFUSED, OpenURI::HTTPError, Errno::ENETUNREACH]) do
           data = build_uri(from, to).read
           extract_rate(data)
         end
@@ -172,7 +172,7 @@ class Money
       end
 
       # * :tries - Number of retries to perform. Defaults to 1.
-      # * :on - The Exception on which a retry will be performed. Defaults to Exception, which retries on any Exception.
+      # * :on - The exceptions on which a retry will be performed. Defaults to Exception, which retries on any Exception.
       #
       # Example
       # =======
@@ -181,14 +181,15 @@ class Money
       #   end
       #
       def retryable(options = {}, &block)
-        opts = { tries: 1, on: Exception, sleep: 1 }.merge(options)
+        opts = { tries: 1, on: [Exception], sleep: 0 }.merge(options)
         retry_exceptions, retries, sleep = opts[:on], opts[:tries], opts[:sleep]
 
         begin
           return yield
         rescue *retry_exceptions
           if (retries -= 1) > 0
-            sleep(sleep += 1)
+            sleep(sleep)
+            sleep += 1
             retry
           end
         end
