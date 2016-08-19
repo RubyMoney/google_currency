@@ -123,20 +123,17 @@ class Money
       #
       # @return [BigDecimal] The requested rate.
       def fetch_rate(from, to)
-
         from, to = Currency.wrap(from), Currency.wrap(to)
 
-        rate = retryable(tries: 3, on: [Errno::ECONNREFUSED, OpenURI::HTTPError, Errno::ENETUNREACH]) do
-          data = build_uri(from, to).read
-          extract_rate(data)
-        end
-
-        if (rate < 0.1)
-          rate = 1/extract_rate(build_uri(to, from).read)
-        end
-
+        rate = extract_rate(read_rate(from, to))
+        rate = 1/extract_rate(read_rate(to, from)) if (rate < 0.1)
         rate
+      end
 
+      def read_rate(c1, c2)
+        retryable(tries: 3, on: [Errno::ECONNREFUSED, OpenURI::HTTPError, Errno::ENETUNREACH]) do
+          build_uri(c1, c2).read
+        end
       end
 
       ##
