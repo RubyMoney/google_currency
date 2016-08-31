@@ -27,6 +27,9 @@ class Money
         # @return [Time] Returns the time when the rates expire.
         attr_reader :rates_expiration
 
+        attr_reader :shared_rates_store
+        attr_reader :shared_rates_store_expires_in
+
         ##
         # Set the Time To Live (TTL) in seconds.
         #
@@ -34,6 +37,14 @@ class Money
         def ttl_in_seconds=(value)
           @ttl_in_seconds = value
           refresh_rates_expiration! if ttl_in_seconds
+        end
+
+        def shared_rates_store=(store)
+          @shared_rates_store = store
+        end
+
+        def shared_rates_store_expires_in=(expires_in)
+          @shared_rates_store_expires_in = expires_in
         end
 
         ##
@@ -48,6 +59,18 @@ class Money
       def initialize(*)
         super
         @store.extend Money::RatesStore::RateRemovalSupport
+      end
+
+      def shared_rates_store
+        self.class.shared_rates_store
+      end
+
+      def shared_rates_store_expires_in
+        self.class.shared_rates_store_expires_in
+      end
+
+      def rate_key(c1,c2)
+        [c1, c2].join(':').upcase
       end
 
       ##
@@ -125,8 +148,14 @@ class Money
       def fetch_rate(from, to)
         from, to = Currency.wrap(from), Currency.wrap(to)
 
-        rate = extract_rate(read_rate(from, to))
-        rate = 1/extract_rate(read_rate(to, from)) if (rate < 0.1)
+        rate = shared_rates_store ? shared_rates_store.read(rate_key(from, to)) : nil
+
+        unless rate
+          rate = extract_rate(read_rate(from, to))
+          rate = 1/extract_rate(read_rate(to, from)) if (rate < 0.1)
+          shared_rates_store.write(rate_key(from, to), rate, expires_in: shared_rates_store_expires_in||3600) if rate && shared_rates_store
+        end
+
         rate
       end
 
@@ -144,7 +173,7 @@ class Money
       #
       # @return [URI::HTTP]
       def build_uri(from, to)
-        uri = URI::HTTP.build(
+        URI::HTTP.build(
           :host  => SERVICE_HOST,
           :path  => SERVICE_PATH,
           :query => "a=1&from=#{from.iso_code}&to=#{to.iso_code}"
