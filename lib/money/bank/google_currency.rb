@@ -164,7 +164,7 @@ class Money
       end
 
       def read_rate(c1, c2)
-        retryable(tries: 3, on: [Errno::ECONNREFUSED, OpenURI::HTTPError, Errno::ENETUNREACH]) do
+        retryable(tries: 3, on: [Errno::ECONNREFUSED, OpenURI::HTTPError, Errno::ENETUNREACH, Net::OpenTimeout]) do
           build_uri(c1, c2).read
         end
       end
