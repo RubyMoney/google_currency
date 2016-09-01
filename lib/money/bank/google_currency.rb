@@ -61,18 +61,6 @@ class Money
         @store.extend Money::RatesStore::RateRemovalSupport
       end
 
-      def shared_rates_store
-        self.class.shared_rates_store
-      end
-
-      def shared_rates_store_expires_in
-        self.class.shared_rates_store_expires_in
-      end
-
-      def rate_key(c1,c2)
-        [c1, c2].join(':').upcase
-      end
-
       ##
       # Clears all rates stored in @rates
       #
@@ -138,6 +126,18 @@ class Money
 
       private
 
+      def shared_rates_store
+        self.class.shared_rates_store
+      end
+
+      def shared_rates_store_expires_in
+        self.class.shared_rates_store_expires_in
+      end
+
+      def rate_key(c1,c2)
+        [c1, c2].join(':').upcase
+      end
+
       ##
       # Queries for the requested rate and returns it.
       #
@@ -147,13 +147,17 @@ class Money
       # @return [BigDecimal] The requested rate.
       def fetch_rate(from, to)
         from, to = Currency.wrap(from), Currency.wrap(to)
-
-        rate = shared_rates_store ? shared_rates_store.read(rate_key(from, to)) : nil
+        rate = read_and_extract_rate(from, to)
+        rate = 1/read_and_extract_rate(to, from) if (rate < 0.1)
+        rate
+      end
+      
+      def read_and_extract_rate(c1, c2)
+        rate = shared_rates_store ? shared_rates_store.read(rate_key(c1, c2)) : nil
 
         unless rate
-          rate = extract_rate(read_rate(from, to))
-          rate = 1/extract_rate(read_rate(to, from)) if (rate < 0.1)
-          shared_rates_store.write(rate_key(from, to), rate, expires_in: shared_rates_store_expires_in||3600) if rate && shared_rates_store
+          rate = extract_rate(read_rate(c1, c2))
+          shared_rates_store.write(rate_key(c1, c2), rate, expires_in: shared_rates_store_expires_in||3600) if rate && shared_rates_store
         end
 
         rate
