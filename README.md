@@ -59,6 +59,9 @@ Consequently, this means that small exchange rates will be imprecise.
 For example, if the IDR to USD exchange rate were 0.00007761, Google will report it as 0.0001.
 This means 100000 IDR would exchange to 10 USD instead of 7.76 USD.
 
+To accommodate for this, the reverse rate will be obtained if the rate is small
+(below 0.1) and the reciprocal of this reverse rate is used.
+
 Copyright
 ---------
 
