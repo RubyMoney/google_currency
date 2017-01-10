@@ -8,6 +8,10 @@ class Money
     # from Google Finance Calculator
     class GoogleCurrencyFetchError < Error
     end
+    # Raised when there is a captcha form request in extracting exchange rates
+    # from Google Finance Calculator
+    class GoogleCurrencyCaptchaError < Error
+    end
 
     class GoogleCurrency < Money::Bank::VariableExchange
 
@@ -164,6 +168,8 @@ class Money
           BigDecimal($1)
         when /Could not convert\./
           raise UnknownRate
+        when /captcha-form/
+          raise GoogleCurrencyCaptchaError
         else
           raise GoogleCurrencyFetchError
         end

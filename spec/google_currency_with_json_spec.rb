@@ -73,6 +73,13 @@ describe "GoogleCurrency" do
           @bank.get_rate('VND', 'USD')
         }.to raise_error(Money::Bank::GoogleCurrencyFetchError)
       end
+
+      it "should raise GoogleCurrencyCaptchaError when the page sends a Captcha form" do
+        allow(@uri).to receive(:read) { load_rate_http_response("captcha") }
+        expect {
+          @bank.get_rate('VND', 'USD')
+        }.to raise_error(Money::Bank::GoogleCurrencyCaptchaError)
+      end
     end
   end
 
