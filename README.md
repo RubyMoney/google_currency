@@ -39,6 +39,8 @@ that `Money` knows, but Google does not.
 An `UnknownCurrency` will be thrown if `#exchange_to` is called with a
 `Currency` that `Money` does not know.
 
+A `GoogleCurrencyCaptchaError` will be thrown if the Google Finance Converter API page responds with a Captcha instead of a rate (#52).
+
 A `GoogleCurrencyFetchError` will be thrown if there is an unknown issue with the Google Finance Converter API.
 
 Caveats
