@@ -152,7 +152,7 @@ class Money
         uri = URI::HTTP.build(
           :host  => SERVICE_HOST,
           :path  => SERVICE_PATH,
-          :query => "a=1&from=#{from.iso_code}&to=#{to.iso_code}"
+          :query => "a=1000&from=#{from.iso_code}&to=#{to.iso_code}"
         )
       end
 
@@ -165,7 +165,7 @@ class Money
       def extract_rate(data)
         case data
         when /<span class=bld>(\d+\.?\d*) [A-Z]{3}<\/span>/
-          BigDecimal($1)
+          BigDecimal($1) / 1_000
         when /Could not convert\./
           raise UnknownRate
         when /captcha-form/
