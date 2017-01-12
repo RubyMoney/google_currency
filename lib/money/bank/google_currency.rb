@@ -31,6 +31,9 @@ class Money
         # @return [Time] Returns the time when the rates expire.
         attr_reader :rates_expiration
 
+        attr_reader :shared_rates_store
+        attr_reader :shared_rates_store_expires_in
+
         ##
         # Set the Time To Live (TTL) in seconds.
         #
@@ -38,6 +41,14 @@ class Money
         def ttl_in_seconds=(value)
           @ttl_in_seconds = value
           refresh_rates_expiration! if ttl_in_seconds
+        end
+
+        def shared_rates_store=(store)
+          @shared_rates_store = store
+        end
+
+        def shared_rates_store_expires_in=(expires_in)
+          @shared_rates_store_expires_in = expires_in
         end
 
         ##
@@ -119,6 +130,18 @@ class Money
 
       private
 
+      def shared_rates_store
+        self.class.shared_rates_store
+      end
+
+      def shared_rates_store_expires_in
+        self.class.shared_rates_store_expires_in
+      end
+
+      def rate_key(c1,c2)
+        [c1, c2].join(':').upcase
+      end
+
       ##
       # Queries for the requested rate and returns it.
       #
@@ -127,18 +150,27 @@ class Money
       #
       # @return [BigDecimal] The requested rate.
       def fetch_rate(from, to)
-
         from, to = Currency.wrap(from), Currency.wrap(to)
+        rate = read_and_extract_rate(from, to)
+        rate = 1/read_and_extract_rate(to, from) if (rate < 0.1)
+        rate
+      end
+      
+      def read_and_extract_rate(c1, c2)
+        rate = shared_rates_store ? shared_rates_store.read(rate_key(c1, c2)) : nil
 
-        data = build_uri(from, to).read
-        rate = extract_rate(data);
-
-        if (rate < 0.1)
-          rate = 1/extract_rate(build_uri(to, from).read)
+        unless rate
+          rate = extract_rate(read_rate(c1, c2))
+          shared_rates_store.write(rate_key(c1, c2), rate, expires_in: shared_rates_store_expires_in||3600) if rate && shared_rates_store
         end
 
         rate
+      end
 
+      def read_rate(c1, c2)
+        retryable(tries: 3, on: [Errno::ECONNREFUSED, OpenURI::HTTPError, Errno::ENETUNREACH, Net::OpenTimeout]) do
+          build_uri(c1, c2).read
+        end
       end
 
       ##
@@ -149,7 +181,7 @@ class Money
       #
       # @return [URI::HTTP]
       def build_uri(from, to)
-        uri = URI::HTTP.build(
+        URI::HTTP.build(
           :host  => SERVICE_HOST,
           :path  => SERVICE_PATH,
           :query => "a=1&from=#{from.iso_code}&to=#{to.iso_code}"
@@ -173,6 +205,32 @@ class Money
         else
           raise GoogleCurrencyFetchError
         end
+      end
+
+      # * :tries - Number of retries to perform. Defaults to 1.
+      # * :on - The exceptions on which a retry will be performed. Defaults to Exception, which retries on any Exception.
+      #
+      # Example
+      # =======
+      #   retryable(tries: 1, on: OpenURI::HTTPError) do
+      #     # your code here
+      #   end
+      #
+      def retryable(options = {}, &block)
+        opts = { tries: 1, on: [Exception], sleep: 0 }.merge(options)
+        retry_exceptions, retries, sleep = opts[:on], opts[:tries], opts[:sleep]
+
+        begin
+          return yield
+        rescue *retry_exceptions
+          if (retries -= 1) > 0
+            sleep(sleep)
+            sleep += 1
+            retry
+          end
+        end
+
+        yield
       end
     end
   end
