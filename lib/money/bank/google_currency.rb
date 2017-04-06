@@ -157,7 +157,7 @@ class Money
 
         unless rate
           rate = bombproof_extract_rate(c1, c2)
-          raise "Fack, totally bombed trying to get the rate for #{c1} -> #{c2}" if rate.blank?
+          raise "Fack, totally bombed trying to get the rate for #{c1} -> #{c2}" if rate.nil?
           shared_rates_store.write(rate_key(c1, c2), rate, expires_in: shared_rates_store_expires_in||3600) if rate && shared_rates_store
         end
 
@@ -178,7 +178,7 @@ class Money
 
         def rate
           rate = rate_lookup(key(@c1, @c2))
-          rate = 1/rate_lookup(key(@c2, @c1)) if (rate.blank? && rate_lookup(key(@c2, @c1)).present?)
+          rate = 1/rate_lookup(key(@c2, @c1)) if (rate.nil? && !rate_lookup(key(@c2, @c1)).nil?)
           rate
         end
 
@@ -194,7 +194,7 @@ class Money
       end
 
       def read_rate(c1, c2)
-        retryable(tries: 3, on: [Errno::ECONNREFUSED, OpenURI::HTTPError, Errno::ENETUNREACH, Net::OpenTimeout]) do
+        retryable(tries: 3, on: [Errno::ECONNREFUSED, OpenURI::HTTPError, Errno::ENETUNREACH]) do
           build_uri(c1, c2).read
         end
       end

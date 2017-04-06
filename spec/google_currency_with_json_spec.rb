@@ -60,19 +60,33 @@ describe "GoogleCurrency" do
         expect(@bank.get_rate('SGD', 'USD')).to eq(BigDecimal("0.8066"))
       end
 
-      it "should raise UnknownRate error when rate is not known" do
+      it "should use hardcoded rates when rate is not known" do
         allow(@uri).to receive(:read) { load_rate_http_response("vnd_to_usd") }
         expect {
           @bank.get_rate('VND', 'USD')
-        }.to raise_error(Money::Bank::UnknownRate)
+        }.to_not raise_error
       end
 
-      it "should raise GoogleCurrencyFetchError there is an unknown issue with extracting the exchange rate" do
+      it "should use hardcoded rates when there is an unknown issue with extracting the exchange rate" do
         allow(@uri).to receive(:read) { load_rate_http_response("error") }
         expect {
           @bank.get_rate('VND', 'USD')
-        }.to raise_error(Money::Bank::GoogleCurrencyFetchError)
+        }.to_not raise_error
       end
+
+      # it "should raise UnknownRate error when rate is not known" do
+      #   allow(@uri).to receive(:read) { load_rate_http_response("vnd_to_usd") }
+      #   expect {
+      #     @bank.get_rate('VND', 'USD')
+      #   }.to raise_error(Money::Bank::UnknownRate)
+      # end
+      #
+      # it "should raise GoogleCurrencyFetchError there is an unknown issue with extracting the exchange rate" do
+      #   allow(@uri).to receive(:read) { load_rate_http_response("error") }
+      #   expect {
+      #     @bank.get_rate('VND', 'USD')
+      #   }.to raise_error(Money::Bank::GoogleCurrencyFetchError)
+      # end
     end
   end
 
