@@ -156,11 +156,41 @@ class Money
         rate = shared_rates_store ? shared_rates_store.read(rate_key(c1, c2)) : nil
 
         unless rate
-          rate = extract_rate(read_rate(c1, c2))
+          rate = bombproof_extract_rate(c1, c2)
+          raise "Fack, totally bombed trying to get the rate for #{c1} -> #{c2}" if rate.blank?
           shared_rates_store.write(rate_key(c1, c2), rate, expires_in: shared_rates_store_expires_in||3600) if rate && shared_rates_store
         end
 
         rate
+      end
+
+      def bombproof_extract_rate(c1, c2)
+        extract_rate(read_rate(c1, c2))
+      rescue UnknownRate, GoogleCurrencyFetchError
+        HardcodedDefaultRates.new(c1, c2).rate
+      end
+
+      class HardcodedDefaultRates
+        def initialize(c1, c2)
+          @c1 = c1
+          @c2 = c2
+        end
+
+        def rate
+          rate = rate_lookup(key(@c1, @c2))
+          rate = 1/rate_lookup(key(@c2, @c1)) if (rate.blank? && rate_lookup(key(@c2, @c1)).present?)
+          rate
+        end
+
+        def key(c1, c2)
+          [c1, c2].join(':')
+        end
+
+        def rate_lookup(key)
+          {
+              'USD:VND' => 22690.00
+          }[key]
+        end
       end
 
       def read_rate(c1, c2)
