@@ -130,11 +130,11 @@ class Money
 
         from, to = Currency.wrap(from), Currency.wrap(to)
 
-        data = build_uri(from, to).read
+        data = fetch_page(from, to)
         rate = extract_rate(data);
 
         if (rate < 0.1)
-          rate = 1/extract_rate(build_uri(to, from).read)
+          rate = 1/extract_rate(fetch_page(to, from))
         end
 
         rate
@@ -142,18 +142,24 @@ class Money
       end
 
       ##
-      # Build a URI for the given arguments.
+      # Retrieve the page after sending the form for the given arguments.
       #
       # @param [Currency] from The currency to convert from.
       # @param [Currency] to The currency to convert to.
       #
       # @return [URI::HTTP]
-      def build_uri(from, to)
-        uri = URI::HTTP.build(
-          :host  => SERVICE_HOST,
-          :path  => SERVICE_PATH,
-          :query => "a=1&from=#{from.iso_code}&to=#{to.iso_code}"
-        )
+      def fetch_page(from, to)
+        agent = Mechanize.new
+        agent.user_agent_alias = "Windows Chrome"
+
+        agent.get("https://www.google.com/finance/converter")
+        page = agent.page
+
+        agent.page.form['from'] = from.iso_code
+        agent.page.form['to'] = to.iso_code
+        result_page = agent.page.form.submit
+
+        result_page.body
       end
 
       ##
