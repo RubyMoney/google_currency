@@ -1,3 +1,9 @@
+3.4.0
+=====
+
+- Add captcha response detection
+- Use finance.google.com for reliability across different regions
+
 3.3.0
 =====
 
