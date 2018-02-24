@@ -46,7 +46,7 @@ A `GoogleCurrencyFetchError` will be thrown if there is an unknown issue with th
 Caveats
 -------
 
-This gem uses [Google Finance Converter](https://www.google.com/finance/converter) under the hood.
+This gem uses [Google Finance Converter](https://finance.google.com/finance/converter) under the hood.
 
 Exchange rates are,
 
