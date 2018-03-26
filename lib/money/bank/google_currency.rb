@@ -17,7 +17,7 @@ class Money
 
 
       SERVICE_HOST = "finance.google.com"
-      SERVICE_PATH = "/finance/converter"
+      SERVICE_PATH = "/bctzjpnsun/converter"
 
 
       # @return [Hash] Stores the currently known rates.
