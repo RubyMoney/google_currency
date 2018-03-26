@@ -1,3 +1,8 @@
+3.4.1
+=====
+
+- Fix the deprecated URL
+
 3.4.0
 =====
 
