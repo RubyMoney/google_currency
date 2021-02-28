@@ -1,3 +1,9 @@
+ARCHIVED
+========
+
+Google's Finance Converter is no more. This exists only for historical purposes. Please see below for alternatives.
+
+
 Google Currency
 ===============
 
